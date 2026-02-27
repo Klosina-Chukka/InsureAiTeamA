@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 function Landing() {
   const navigate = useNavigate();
+  const { login, register } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     role: "CUSTOMER",
@@ -19,27 +24,50 @@ function Landing() {
     });
   };
 
-  const handleRegister = () => {
-    if (!formData.name || !formData.email || !formData.password) {
-      alert("Please fill all fields");
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
+      toast.error("Please fill all fields");
       return;
     }
 
-    alert("Registration successful! You can now login.");
-    setIsLogin(true);
+    setLoading(true);
+    try {
+      await register(formData);
+      toast.success("Registration successful! Please check your email for verification.");
+      setIsLogin(true);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleLogin = () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    
     if (!formData.email || !formData.password) {
-      alert("Enter email and password");
+      toast.error("Enter email and password");
       return;
     }
 
-    // Fake login (no backend)
-    localStorage.setItem("role", formData.role);
-    localStorage.setItem("token", "fake-token");
-
-    navigate("/home");
+    setLoading(true);
+    try {
+      // Send as JSON instead of form data
+      const loginData = {
+        email: formData.email,
+        password: formData.password
+      };
+      
+      await login(loginData);
+      toast.success("Login successful!");
+      navigate("/home");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -53,9 +81,20 @@ function Landing() {
         {!isLogin && (
           <input
             type="text"
-            name="name"
-            placeholder="Full Name"
-            value={formData.name}
+            name="firstName"
+            placeholder="First Name"
+            value={formData.firstName}
+            onChange={handleChange}
+            className="w-full mb-4 px-4 py-3 rounded-xl bg-[#1F2937] border border-gray-600 outline-none"
+          />
+        )}
+
+        {!isLogin && (
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            value={formData.lastName}
             onChange={handleChange}
             className="w-full mb-4 px-4 py-3 rounded-xl bg-[#1F2937] border border-gray-600 outline-none"
           />
@@ -93,19 +132,25 @@ function Landing() {
         )}
 
         {isLogin ? (
-          <button
-            onClick={handleLogin}
-            className="w-full bg-cyan-500 hover:bg-cyan-600 py-3 rounded-xl font-semibold"
-          >
-            Login
-          </button>
+          <form onSubmit={handleLogin}>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-cyan-500 hover:bg-cyan-600 py-3 rounded-xl font-semibold disabled:opacity-50"
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+          </form>
         ) : (
-          <button
-            onClick={handleRegister}
-            className="w-full bg-cyan-500 hover:bg-cyan-600 py-3 rounded-xl font-semibold"
-          >
-            Sign Up
-          </button>
+          <form onSubmit={handleRegister}>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-cyan-500 hover:bg-cyan-600 py-3 rounded-xl font-semibold disabled:opacity-50"
+            >
+              {loading ? "Creating account..." : "Sign Up"}
+            </button>
+          </form>
         )}
 
         <p
