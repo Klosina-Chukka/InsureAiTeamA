@@ -1,5 +1,6 @@
 C:\Users\SAMA\Desktop\InsureAi2\corporate-insurance-backend\src\main\java\com\insurance\config\SecurityConfig.java
 C:\Users\SAMA\Desktop\InsureAi2\corporate-insurance-backend\src\main\java\com\insurance\security\JwtTokenProvider.java
+C:\Users\SAMA\Desktop\InsureAi2\corporate-insurance-backend\src\main\java\com\insurance\exception\GlobalExceptionHandler.java
 C:\Users\SAMA\Desktop\InsureAi2\corporate-insurance-backend\src\main\java\com\insurance\service\NotificationService.java
 C:\Users\SAMA\Desktop\InsureAi2\corporate-insurance-backend\src\main\java\com\insurance\repository\AgentAvailabilityRepository.java
 C:\Users\SAMA\Desktop\InsureAi2\corporate-insurance-backend\src\main\java\com\insurance\security\CustomUserDetailsService.java

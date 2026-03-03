@@ -26,7 +26,7 @@ function Landing() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
       toast.error("Please fill all fields");
       return;
@@ -34,9 +34,13 @@ function Landing() {
 
     setLoading(true);
     try {
-      await register(formData);
-      toast.success("Registration successful! Please check your email for verification.");
-      setIsLogin(true);
+      const result = await register(formData);
+      if (result.success) {
+        toast.success("Registration successful! Please check your email for verification.");
+        setIsLogin(true);
+      } else {
+        // AuthContext already toasts the error, but we can also set error state if needed
+      }
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed");
     } finally {
@@ -46,7 +50,7 @@ function Landing() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.password) {
       toast.error("Enter email and password");
       return;
@@ -59,10 +63,11 @@ function Landing() {
         email: formData.email,
         password: formData.password
       };
-      
-      await login(loginData);
-      toast.success("Login successful!");
-      navigate("/home");
+
+      const result = await login(loginData);
+      if (result.success) {
+        navigate("/home");
+      }
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     } finally {

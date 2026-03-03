@@ -82,8 +82,12 @@ public class AuthService {
         User savedUser = userRepository.save(user);
 
         // Send verification email
-        var emailToken = tokenService.createEmailVerificationToken(savedUser);
-        emailService.sendVerificationEmail(savedUser, emailToken.getToken());
+        try {
+            var emailToken = tokenService.createEmailVerificationToken(savedUser);
+            emailService.sendVerificationEmail(savedUser, emailToken.getToken());
+        } catch (Exception e) {
+            System.err.println("Warning: Failed to send verification email: " + e.getMessage());
+        }
 
         // Auto-login after registration
         LoginRequest loginRequest = new LoginRequest(registerRequest.getEmail(), registerRequest.getPassword());

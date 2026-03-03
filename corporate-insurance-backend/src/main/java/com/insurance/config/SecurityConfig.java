@@ -87,6 +87,7 @@ public class SecurityConfig {
                 
                 // Health check
                 .requestMatchers("/api/health").permitAll()
+                .requestMatchers("/error").permitAll()
                 
                 // All other requests need to be authenticated
                 .anyRequest().authenticated()
