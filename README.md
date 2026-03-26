@@ -272,10 +272,4 @@ The system follows **clean MVC architecture** with:
 - AI-powered recommendation system
 - Multi-language support
 
-## 📞 Support
 
-For any issues or questions, please refer to the documentation or contact the development team.
-
----
-
-**Built with ❤️ using React, Spring Boot, and MySQL**
